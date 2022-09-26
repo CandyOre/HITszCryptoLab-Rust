@@ -16,7 +16,7 @@ impl IOHelper {
         // only alphabet or numeric is kept
         let line: String = IOHelper::get_line()?
             .chars().filter(|c| c.is_ascii_alphanumeric()).collect();
-        if len != line.len() {
+        if len != 0 && len != line.len() {
             Err(IOError::MismatchedLength {
                 required: (len), acquired: (line.len())
             })

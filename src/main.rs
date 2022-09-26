@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate lazy_static;
+
 mod console;
 mod demo;
 mod aes;
@@ -6,5 +9,6 @@ use demo::Demo;
 use aes::Aes;
 
 fn main() {
-    Aes::start_demo();
+    let mut aes = Aes::new();
+    aes.start_demo();
 }

@@ -1,4 +1,4 @@
 pub trait Demo {
-    fn get_name() -> String;
-    fn start_demo();
+    fn get_name(&self) -> String;
+    fn start_demo(&mut self);
 }
