@@ -3,8 +3,8 @@ mod demo;
 mod aes;
 
 use demo::Demo;
+use aes::Aes;
 
 fn main() {
-    let my_demo = aes::Aes::new();
-    my_demo.start_demo();
+    Aes::start_demo();
 }
