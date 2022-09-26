@@ -1,3 +1,10 @@
+mod console;
+mod demo;
+mod aes;
+
+use demo::Demo;
+
 fn main() {
-    println!("Hello, world!");
+    let my_demo = aes::Aes::new();
+    my_demo.start_demo();
 }
