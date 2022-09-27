@@ -26,18 +26,6 @@ pub struct Row {
 }
 
 impl Row {
-    pub fn from_string(s: &String) -> Option<Row> {
-        if s.len() != 4 {
-            None
-        } else {
-            let mut content = 0 as u32;
-            for ch in s.as_bytes() {
-                content = (*ch as u32) + (content << 8);
-            }
-            Some(Row {content})
-        }
-    }
-
     pub fn from_iter<T, E>(src: T) -> Option<Row>
     where
         T: IntoIterator<Item = E>,
