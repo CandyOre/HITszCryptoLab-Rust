@@ -37,14 +37,14 @@ impl IOHelper {
 }
 
 impl IOHelper {
-    pub fn make_char_hex<T, E>(content: T)
+    pub fn make_char_hex<T, E>(content: T, len: usize)
         -> Vec<String>
     where
         T: IntoIterator<Item = E>,
         E: std::fmt::LowerHex,
     {
         content.into_iter()
-            .map(|x| format!("{:#010x}", x))
+            .map(|x| format!("{:#01$x}", x, len + 2))
             .collect()
     }
 

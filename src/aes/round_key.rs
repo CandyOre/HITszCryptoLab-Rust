@@ -59,7 +59,8 @@ mod test {
         let round_key = RoundKey::new(&"securitysecurity".to_string());
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(
-                round_key.w.clone()
+                round_key.w.clone(),
+                8,
             ),
             4
         );
@@ -74,7 +75,8 @@ mod test {
         );
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(
-                round_key.w.clone()
+                round_key.w.clone(),
+                8,
             ),
             4
         );

@@ -42,7 +42,8 @@ impl Aes {
         self.round_key = RoundKey::new(&self.key);
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(
-                self.round_key.w.clone()
+                self.round_key.w.clone(),
+                8,
             ),
             4
         );
@@ -50,9 +51,12 @@ impl Aes {
 
     fn acquire_cypher(&mut self) {
         println!("Encrypting...");
-        let cypher = process::encrypt(&self.key, &self.plain);
+        let cypher = process::encrypt(&self.round_key, &self.plain);
         println!("The cypher text is: ");
-        unimplemented!();
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(cypher, 2),
+            16
+        );
     }
 
     fn write_file(&self) {
