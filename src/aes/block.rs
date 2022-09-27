@@ -22,3 +22,15 @@ impl Block {
         }
     }
 }
+
+impl From<[u8; 16]> for Block {
+    fn from(e: [u8; 16]) -> Self {
+        let mut block: Block = Default::default();
+        for i in 0..4 {
+            for j in 0..4 {
+                block.content[i][j] = e[i*4+j];
+            }
+        }
+        block
+    }
+}
