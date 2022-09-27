@@ -1,5 +1,6 @@
 mod round_key;
-mod state;
+mod row;
+mod block;
 mod process;
 mod consts;
 

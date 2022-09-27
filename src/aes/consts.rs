@@ -1,5 +1,5 @@
-use super::state::Row;
-use super::state::Block;
+use super::row::Row;
+use super::block::Block;
 
 lazy_static! {
     pub static ref RCON: Vec<Row> = [

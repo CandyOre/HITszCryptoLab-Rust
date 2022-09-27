@@ -2,24 +2,6 @@ use std::fmt::LowerHex;
 
 use super::consts::SBOX;
 
-#[derive(Clone, Default)]
-pub struct Block {
-    content: [[u8; 4]; 4],
-}
-
-impl Block {
-    pub fn from_vec(vec: Vec<u8>) -> Option<Block>
-    {
-        let mut block: Block = Default::default();
-        for i in 0..3 {
-            for j in 0..3 {
-                block.content[j][i] = vec[i * 4 + j]
-            }
-        }
-        Some(block)
-    }
-}
-
 #[derive(Clone, Default, Copy)]
 pub struct Row {
     content: u32,

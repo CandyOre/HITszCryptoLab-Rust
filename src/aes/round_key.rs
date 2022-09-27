@@ -1,6 +1,7 @@
 use crate::aes::consts::RCON;
 
-use super::state::{Block, Row};
+use super::row::Row;
+use super::block::Block;
 
 #[derive(Default)]
 pub struct RoundKey {
@@ -39,6 +40,10 @@ impl RoundKey {
     fn new_k(w: &Vec<Row>) -> Vec<Block> {
         let mut k = Vec::new();
         k.resize(11, Default::default());
+
+        for i in 0..=10 {
+            k[i] = Block::from_column(w[i*4..i*4+4].to_vec()).unwrap();
+        }
 
         k
     }
