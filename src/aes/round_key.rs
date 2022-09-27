@@ -1,42 +1,78 @@
-use super::state::Block;
+use crate::aes::consts::RCON;
 
-lazy_static! {
-    pub static ref ROUNDKEY: RoundKey = RoundKey::new();
-}
+use super::state::{Block, Row};
 
+#[derive(Default)]
 pub struct RoundKey {
-    w: Vec<u8>,
-    k: Vec<Block>,
+    pub w: Vec<Row>,
+    pub k: Vec<Block>,
 }
 
 impl RoundKey {
-    pub fn get_w(&self, pos: usize) -> Option<u8> {
-        if pos < 44 {
-            Some(ROUNDKEY.w[pos])
-        } else {
-            None
-        }
-    }
-}
 
-impl RoundKey {
-    fn new() -> Self {
-        let w = RoundKey::new_w();
+    pub fn new(key: &String) -> Self {
+        let w = RoundKey::new_w(key);
         let k = RoundKey::new_k(&w);
         RoundKey { w, k }
     }
 
-    fn new_w() -> Vec<u8> {
+    fn new_w(key: &String) -> Vec<Row> {
+        assert_eq!(key.len(), 16);
+
         let mut w = Vec::new();
-        w.resize(44, 0);
-        unimplemented!();
+        w.resize(44, Default::default());
+
+        for i in 0..4 {
+            w[i] = Row::from_iter(key[i*4..i*4+4].to_string().chars()).unwrap();
+        }
+
+        for i in 1..=10 {
+            w[i*4] = w[i*4-4] ^ (w[i*4-1].rotate().sub() ^ RCON[i-1]);
+            for j in 1..4 {
+                w[i*4+j] = w[i*4+j-4] ^ w[i*4+j-1];
+            }
+        }
+
         w
     }
 
-    fn new_k(w: &Vec<u8>) -> Vec<Block> {
+    fn new_k(w: &Vec<Row>) -> Vec<Block> {
         let mut k = Vec::new();
-        k.resize(11, Block::new());
-        unimplemented!();
+        k.resize(11, Default::default());
+
         k
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use super::super::IOHelper;
+
+    #[test]
+    fn test_key_1() {
+        let round_key = RoundKey::new(&"securitysecurity".to_string());
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(
+                round_key.w.clone()
+            ),
+            4
+        );
+        println!("");
+    }
+
+    #[test]
+    fn test_key_2() {
+        let round_key = RoundKey::new(
+            &[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5 as u8]
+            .into_iter().map(|x| x as char).collect()
+        );
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(
+                round_key.w.clone()
+            ),
+            4
+        );
+        println!("");
     }
 }

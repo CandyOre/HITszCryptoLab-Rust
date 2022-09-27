@@ -35,3 +35,35 @@ impl IOHelper {
         }
     }
 }
+
+impl IOHelper {
+    pub fn make_char_hex<T, E>(content: T)
+        -> Vec<String>
+    where
+        T: IntoIterator<Item = E>,
+        E: std::fmt::LowerHex,
+    {
+        content.into_iter()
+            .map(|x| format!("{:#010x}", x))
+            .collect()
+    }
+
+    pub fn print_with_newline<T, E>(content: T, per_line: usize)
+    where
+        T: IntoIterator<Item = E>,
+        E: std::fmt::Display,
+    {
+        let mut cnt = 0 as usize;
+        for e in content {
+            print!("{e}");
+            cnt += 1;
+            if cnt >= per_line {
+                cnt = 0;
+                print!("\n");
+            } else {
+                print!(" ");
+            }
+        }
+    }
+
+}

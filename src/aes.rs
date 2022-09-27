@@ -1,25 +1,24 @@
 mod round_key;
 mod state;
 mod process;
+mod consts;
 
-use round_key::ROUNDKEY;
+use round_key::RoundKey;
 
 use crate::demo::Demo;
 use crate::console::io::IOHelper;
 
+#[derive(Default)]
 pub struct Aes {
     key: String,
     plain: String,
+    round_key: RoundKey,
     cypher: Vec<u8>,
 }
 
 impl Aes {
     pub fn new() -> Self {
-        Aes {
-            key: String::new(),
-            plain: String::new(),
-            cypher: Vec::new(),
-        }
+        Default::default()
     }
 
     fn acquire_key(&mut self) {
@@ -37,9 +36,15 @@ impl Aes {
         )
     }
 
-    fn show_round_key() {
+    fn acquire_round_key(&mut self) {
         println!("Calculating Round Key...");
-        unimplemented!();
+        self.round_key = RoundKey::new(&self.key);
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(
+                self.round_key.w.clone()
+            ),
+            4
+        );
     }
 
     fn acquire_cypher(&mut self) {
@@ -67,7 +72,7 @@ impl Demo for Aes {
     fn start_demo(&mut self) {
         self.acquire_key();
         self.acquire_plain();
-        Aes::show_round_key();
+        self.acquire_round_key();
         self.acquire_cypher();
         self.write_file();
         self.try_decrypt();
