@@ -15,6 +15,7 @@ pub struct Aes {
     plain: String,
     round_key: RoundKey,
     cypher: Vec<u8>,
+    save_path: String,
 }
 
 impl Aes {
@@ -51,20 +52,30 @@ impl Aes {
 
     fn acquire_cypher(&mut self) {
         println!("Encrypting...");
-        let cypher = process::encrypt(&self.round_key, &self.plain);
+        self.cypher = process::encrypt(&self.round_key, &self.plain);
         println!("The cypher text is: ");
         IOHelper::print_with_newline(
-            IOHelper::make_char_hex(cypher, 2),
+            IOHelper::make_char_hex(self.cypher.clone(), 2),
             16
         );
     }
 
-    fn write_file(&self) {
-        unimplemented!();
+    fn write_file(&mut self) {
+        self.save_path = IOHelper::get_string_loop(
+            0,
+            "Please input saved path: ".to_string(),
+        );
+        if let Err(_) = IOHelper::write_file(
+            &self.save_path,
+            &self.cypher,
+        ) {
+            println!("Error occur during writing file.");
+            panic!("Aes Demo: write_file");
+        }
     }
 
     fn try_decrypt(&self) {
-        unimplemented!();
+        
     }
 
 }

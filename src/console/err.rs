@@ -18,7 +18,7 @@ impl IOError {
                 + ", but got "
                 + &acquired.to_string()
                 + "."
-            }
+            },
         }
     }
 }

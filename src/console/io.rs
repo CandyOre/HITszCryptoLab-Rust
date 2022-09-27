@@ -1,9 +1,13 @@
 use super::err::IOError;
 
+use std::fs::{File, OpenOptions};
 use std::io::{self, Write};
+
+use std::path::Path;
 
 pub struct IOHelper {}
 
+// get functions
 impl IOHelper {
     fn get_line() -> Result<String, IOError> {
         let mut buf = String::new();
@@ -15,7 +19,11 @@ impl IOHelper {
     pub fn get_string(len: usize) -> Result<String, IOError> {
         // only alphabet or numeric is kept
         let line: String = IOHelper::get_line()?
-            .chars().filter(|c| c.is_ascii_alphanumeric()).collect();
+            .chars()
+            .filter(|c|
+                c.is_ascii_alphanumeric() ||
+                c.is_ascii_punctuation()
+            ).collect();
         if len != 0 && len != line.len() {
             Err(IOError::MismatchedLength {
                 required: (len), acquired: (line.len())
@@ -36,6 +44,7 @@ impl IOHelper {
     }
 }
 
+// print functions
 impl IOHelper {
     pub fn make_char_hex<T, E>(content: T, len: usize)
         -> Vec<String>
@@ -65,5 +74,18 @@ impl IOHelper {
             }
         }
     }
+}
 
+// file functions   
+impl IOHelper {
+    pub fn write_file(path: &String, content: &[u8]) -> Result<(), IOError> {
+        let path = Path::new(&path);
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(&path)?;
+        file.write_all(content)?;
+        Ok(())
+    }
 }
