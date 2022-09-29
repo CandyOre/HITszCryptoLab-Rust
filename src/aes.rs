@@ -39,7 +39,7 @@ impl Aes {
     }
 
     fn acquire_round_key(&mut self) {
-        println!("Calculating Round Key...");
+        println!("\nCalculating Round Key...");
         self.round_key = RoundKey::new(&self.key);
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(
@@ -51,7 +51,7 @@ impl Aes {
     }
 
     fn acquire_cypher(&mut self) {
-        println!("Encrypting...");
+        println!("\nEncrypting...");
         self.cypher = process::encrypt(&self.round_key, &self.plain);
         println!("The cypher text is: ");
         IOHelper::print_with_newline(
@@ -98,9 +98,27 @@ impl Aes {
     }
 
     fn decrypt_plain(&mut self) {
-        println!("Decrypting...");
+        println!("\nDecrypting...");
         self.plain = process::decrypt(&self.round_key, &self.cypher);
-        println!("The plain text is {}.", self.plain);
+        println!("The plain text as ASCII is:");
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(
+                self.plain.as_bytes(),
+                2),
+            16
+        );
+        println!("The plain text is \"{}\".", self.plain);
+    }
+
+    fn decrypt_write(&self) {
+        if let Err(e) = IOHelper::write_file(
+            &(self.save_path.clone() + ".txt"),
+            &self.plain.as_bytes(),
+        ) {
+            println!("Error occur during writing file.");
+            panic!("Aes Demo - write_file: {}", e.to_string());
+        }
+        println!("\nThe plain text is available at \"{}.txt\".", &self.save_path);
     }
 
 }
@@ -118,6 +136,7 @@ impl Demo for Aes {
         self.write_file();
         if self.read_file() {
             self.decrypt_plain();
+            self.decrypt_write();
         }
     }
 }
