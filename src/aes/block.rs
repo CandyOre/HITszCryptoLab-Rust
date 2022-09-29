@@ -1,6 +1,7 @@
-use std::num::Wrapping;
-
-use super::{row::Row, consts::SBOX};
+use super::{
+    row::Row,
+    consts::{SBOX, SBOX_INV}
+};
 
 #[derive(Clone, Default, Copy)]
 pub struct Block {
@@ -66,6 +67,12 @@ impl Block {
         ).unwrap()
     }
 
+    pub fn sub_inv(&mut self) -> Self {
+        Self::from_column_iter(
+            self.into_column_iter().map(|x| SBOX_INV[x as usize])
+        ).unwrap()
+    }
+
     pub fn shift(&mut self) -> Self {
         self.content[1] = [
             self.content[1][1],
@@ -84,6 +91,28 @@ impl Block {
             self.content[3][0],
             self.content[3][1],
             self.content[3][2],
+        ];
+        *self
+    }
+
+    pub fn shift_inv(&mut self) -> Self {
+        self.content[1] = [
+            self.content[1][3],
+            self.content[1][0],
+            self.content[1][1],
+            self.content[1][2],
+        ];
+        self.content[2] = [
+            self.content[2][2],
+            self.content[2][3],
+            self.content[2][0],
+            self.content[2][1],
+        ];
+        self.content[3] = [
+            self.content[3][1],
+            self.content[3][2],
+            self.content[3][3],
+            self.content[3][0],
         ];
         *self
     }

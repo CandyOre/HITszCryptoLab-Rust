@@ -97,8 +97,10 @@ impl Aes {
         }
     }
 
-    fn decrypt_plain(&self) {
-        
+    fn decrypt_plain(&mut self) {
+        println!("Decrypting...");
+        self.plain = process::decrypt(&self.round_key, &self.cypher);
+        println!("The plain text is {}.", self.plain);
     }
 
 }
