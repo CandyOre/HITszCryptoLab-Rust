@@ -1,7 +1,7 @@
 use super::err::IOError;
 
 use std::fs::{File, OpenOptions};
-use std::io::{self, Write};
+use std::io::{self, Write, Read};
 
 use std::path::Path;
 
@@ -87,5 +87,17 @@ impl IOHelper {
             .open(&path)?;
         file.write_all(content)?;
         Ok(())
+    }
+
+    pub fn read_file(path: &String) -> Result<Vec<u8>, IOError> {
+        let path = Path::new(&path);
+        let mut file = OpenOptions::new()
+            .read(true)
+            .open(&path)?;
+        let mut content = [0u8; 1024];
+        match file.read(&mut content) {
+            Ok(n) => Ok(content[0..n].to_vec()),
+            Err(e) => Err(IOError::from(e)),
+        }
     }
 }

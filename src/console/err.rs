@@ -1,15 +1,16 @@
 use std::io::Error;
 
 pub enum IOError {
-    UpstreamError,
+    UpstreamError(Error),
     MismatchedLength {required: usize, acquired: usize},
 }
 
 impl IOError {
     pub fn to_string(&self) -> String {
-        match *self {
-            IOError::UpstreamError => {
-                "Error occurs during io manipulation!".to_string()
+        match self {
+            IOError::UpstreamError(e) => {
+                "Upstream error: ".to_string()
+                + &e.to_string()
             },
             IOError::MismatchedLength {required, acquired} => {
                 "Mismatched Length: ".to_string()
@@ -24,7 +25,7 @@ impl IOError {
 }
 
 impl From<Error> for IOError {
-    fn from(_: Error) -> Self {
-        Self::UpstreamError
+    fn from(e: Error) -> Self {
+        Self::UpstreamError(e)
     }
 }

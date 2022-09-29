@@ -63,18 +63,41 @@ impl Aes {
     fn write_file(&mut self) {
         self.save_path = IOHelper::get_string_loop(
             0,
-            "Please input saved path: ".to_string(),
+            "Please input save path: ".to_string(),
         );
-        if let Err(_) = IOHelper::write_file(
+        if let Err(e) = IOHelper::write_file(
             &self.save_path,
             &self.cypher,
         ) {
             println!("Error occur during writing file.");
-            panic!("Aes Demo: write_file");
+            panic!("Aes Demo - write_file: {}", e.to_string());
         }
     }
 
-    fn try_decrypt(&self) {
+    fn read_file(&mut self) -> bool {
+        if "1" != IOHelper::get_string_loop(
+            0, 
+            "Input \"1\" to continue decypher demo: ".to_string()
+        ) {
+            false
+        } else {
+            self.save_path = IOHelper::get_string_loop(
+                0,
+                "Please input save path: ".to_string(),
+            );
+            match IOHelper::read_file(&self.save_path) {
+                Ok(content) =>
+                    self.cypher = content.to_vec(),
+                Err(e) => {
+                    println!("Error occur during reading file.");
+                    panic!("Aes Demo - read_file: {}", e.to_string());
+                }
+            }
+            true
+        }
+    }
+
+    fn decrypt_plain(&self) {
         
     }
 
@@ -91,6 +114,8 @@ impl Demo for Aes {
         self.acquire_round_key();
         self.acquire_cypher();
         self.write_file();
-        self.try_decrypt();
+        if self.read_file() {
+            self.decrypt_plain();
+        }
     }
 }
