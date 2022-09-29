@@ -1,6 +1,6 @@
 use super::err::IOError;
 
-use std::fs::{File, OpenOptions};
+use std::fs::OpenOptions;
 use std::io::{self, Write, Read};
 
 use std::path::Path;

@@ -130,10 +130,10 @@ impl From<[u8; 16]> for Block {
     }
 }
 
-impl std::ops::BitXor<Block> for Block {
+impl std::ops::Add<Block> for Block {
     type Output = Block;
 
-    fn bitxor(self, rhs: Block) -> Self::Output {
+    fn add(self, rhs: Block) -> Self::Output {
         let mut block: Block = Default::default();
         for i in 0..4 {
             for j in 0..4 {
