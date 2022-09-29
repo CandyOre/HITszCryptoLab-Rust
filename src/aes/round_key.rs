@@ -49,6 +49,14 @@ impl RoundKey {
     }
 }
 
+impl std::ops::Index<usize> for RoundKey {
+    type Output = Block;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.k[index]
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
