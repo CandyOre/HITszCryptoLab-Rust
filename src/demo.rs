@@ -1,14 +1,19 @@
 use crate::{
     console::io::IOHelper,
-    cypher::CypherCommon
+    cypher::{CypherCommon, Encryptor, Decryptor}
 };
 
 pub trait Demo {
 
     fn get_name(&self) -> String;
 
+    fn acquire_key(&mut self);
+    fn get_encryptor(&self) -> &dyn Encryptor;
+    fn get_decryptor(&self) -> &dyn Decryptor;
+
     fn start_demo(&mut self) {
         let mut common: CypherCommon = Default::default();
+        println!("\n======== Demo {} Start ========", self.get_name());
         self.acquire_key();
         acquire_plain(&mut common);
         self.acquire_cypher(&mut common);
@@ -17,11 +22,31 @@ pub trait Demo {
             self.decrypt_plain(&mut common);
             decrypt_write(&mut common);
         }
+        println!("\n========= Demo {} End =========", self.get_name());
     }
 
-    fn acquire_key(&mut self);
-    fn acquire_cypher(&mut self, common: &mut CypherCommon);
-    fn decrypt_plain(&mut self, common: &mut CypherCommon);
+    fn acquire_cypher(&mut self, common: &mut CypherCommon) {
+        println!("\nEncrypting...");
+        common.cypher = self.get_encryptor().encrypt(&common.plain);
+        println!("The cypher text is: ");
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(common.cypher.clone(), 2),
+            16
+        );
+    }
+
+    fn decrypt_plain(&mut self, common: &mut CypherCommon) {
+        println!("\nDecrypting...");
+        common.plain = self.get_decryptor().decrypt(&common.cypher);
+        println!("The plain text as ASCII is:");
+        IOHelper::print_with_newline(
+            IOHelper::make_char_hex(
+                common.plain.as_bytes(),
+                2),
+            16
+        );
+        println!("The plain text is \"{}\".", common.plain);
+    }
 }
 
 fn acquire_plain(common: &mut CypherCommon) {
