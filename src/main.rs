@@ -11,9 +11,12 @@ mod aes;
 mod rsa;
 
 use demo::Demo;
+#[allow(unused_imports)]
+use aes::Aes;
+#[allow(unused_imports)]
 use rsa::Rsa;
 
 fn main() {
-    let mut demo = Rsa::new();
+    let mut demo = Aes::new();
     demo.start_demo();
 }

@@ -35,4 +35,16 @@ impl Demo for Rsa {
         self.cypher = self.public_key.encrypt(&self.plain);
         self.decoded = self.private_key.decrypt(&self.cypher);
     }
+
+    fn acquire_key(&mut self) {
+        todo!()
+    }
+
+    fn acquire_cypher(&mut self) {
+        todo!()
+    }
+
+    fn decrypt_plain(&mut self) {
+        todo!()
+    }
 }
