@@ -44,7 +44,7 @@ impl Demo for Aes {
 
     fn start_demo(&mut self) {
         self.acquire_key();
-        self.plain =  Aes::acquire_plain();
+        Aes::acquire_plain(&mut self.plain);
         self.acquire_cypher();
         Aes::write_file(&mut self.save_path, &self.cypher);
         if Aes::read_file(&mut self.save_path, &mut self.cypher) {

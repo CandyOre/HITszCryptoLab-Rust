@@ -9,8 +9,8 @@ pub trait Demo {
     fn acquire_cypher(&mut self);
     fn decrypt_plain(&mut self);
 
-    fn acquire_plain() -> String {
-        IOHelper::get_string_loop(
+    fn acquire_plain(plain: &mut String) {
+        *plain = IOHelper::get_string_loop(
             0,
             "\nPlease input plain text: ".to_string(),
         )
