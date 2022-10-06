@@ -4,7 +4,7 @@ mod block;
 mod process;
 mod consts;
 
-use crate::cypher::{Encryptor, Decryptor};
+use crate::cypher::{Encryptor, Decryptor, CypherCommon};
 use round_key::RoundKey;
 
 use crate::demo::Demo;
@@ -13,10 +13,7 @@ use crate::console::io::IOHelper;
 #[derive(Default)]
 pub struct Aes {
     key: String,
-    plain: String,
     round_key: RoundKey,
-    cypher: Vec<u8>,
-    save_path: String,
 }
 
 impl Aes {
@@ -42,17 +39,6 @@ impl Demo for Aes {
         "Advanced Encryption Standard".to_string()
     }
 
-    fn start_demo(&mut self) {
-        self.acquire_key();
-        Aes::acquire_plain(&mut self.plain);
-        self.acquire_cypher();
-        Aes::write_file(&mut self.save_path, &self.cypher);
-        if Aes::read_file(&mut self.save_path, &mut self.cypher) {
-            self.decrypt_plain();
-            Aes::decrypt_write(&self.save_path, &self.plain);
-        }
-    }
-
     fn acquire_key(&mut self) {
         self.key = IOHelper::get_string_loop(
             16,
@@ -62,26 +48,26 @@ impl Demo for Aes {
         self.acquire_round_key();
     }
 
-    fn acquire_cypher(&mut self) {
+    fn acquire_cypher(&mut self, common: &mut CypherCommon) {
         println!("\nEncrypting...");
-        self.cypher = self.round_key.encrypt(&self.plain);
+        common.cypher = self.round_key.encrypt(&common.plain);
         println!("The cypher text is: ");
         IOHelper::print_with_newline(
-            IOHelper::make_char_hex(self.cypher.clone(), 2),
+            IOHelper::make_char_hex(common.cypher.clone(), 2),
             16
         );
     }
 
-    fn decrypt_plain(&mut self) {
+    fn decrypt_plain(&mut self, common: &mut CypherCommon) {
         println!("\nDecrypting...");
-        self.plain = self.round_key.decrypt(&self.cypher);
+        common.plain = self.round_key.decrypt(&common.cypher);
         println!("The plain text as ASCII is:");
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(
-                self.plain.as_bytes(),
+                common.plain.as_bytes(),
                 2),
             16
         );
-        println!("The plain text is \"{}\".", self.plain);
+        println!("The plain text is \"{}\".", common.plain);
     }
 }
