@@ -16,7 +16,7 @@ pub struct Rsa {
 impl Rsa {
     pub fn new() -> Self {
         let mut new: Self = Default::default();
-        new.bits = 1024;
+        new.bits = 128;
         new
     }
 }

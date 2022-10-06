@@ -45,18 +45,16 @@ impl RsaPublicKey {
 impl Encryptor for RsaPublicKey {
     fn encrypt(&self, plain: &String) -> Vec<u8> {
         let step = self.bits / 8 - 1;
+
         let plain = align_string(plain, step);
-        let plain = plain.as_bytes();
-        println!("{} {}", plain.len(), step);
-        assert!(plain.len() % step == 0);
-        println!("{:?}", plain);
+        let bytes = plain.as_bytes();
+
         let mut enc = Vec::with_capacity(plain.len());
         for i in (0..plain.len()).step_by(step) {
-            let mut msg = BigUint::from_bytes_be(&plain[i..i+step]);
+            let mut msg = BigUint::from_bytes_be(&bytes[i..i+step]);
             msg = msg.modpow(&self.e, &self.n);
             enc.append(&mut align_vec(&msg.to_bytes_le(), step + 1))
         };
-        println!("{:?}", enc);
         enc
     }
 }
@@ -64,19 +62,19 @@ impl Encryptor for RsaPublicKey {
 impl Decryptor for RsaPrivateKey {
     fn decrypt(&self, cypher: &Vec<u8>) -> String {
         let step = self.public_component.bits / 8;
+
         let mut plain = String::new();
         for i in (0..cypher.len()).step_by(step) {
             let mut msg = BigUint::from_bytes_le(&cypher[i..i+step]);
-            println!("{:?}", cypher);
             msg = msg.modpow(&self.d, &self.public_component.n);
+
             let mut bytes = msg.to_bytes_le();
             bytes.reverse();
             let bytes = bytes.into_iter().filter(|x| x > &0).collect();
-            println!("{:?}", bytes);
+
             plain.push_str(
                 &String::from_utf8(bytes)
-                .ok()
-                .expect("Malicious Cypher")
+                .ok().expect("Malicious Cypher")
             );
         }
         plain
