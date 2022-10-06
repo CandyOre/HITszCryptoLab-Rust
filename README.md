@@ -1,14 +1,25 @@
 # About
-Personally developed rust architecture for HITsz Cryptography Lab. 
+Personally developed rust architecture for HITsz Cryptography Lab.
 
 Will be continuously updating with the progress of the lab course.
 
+## Feature
+
+1. A uniform command line user interface for Cryptography algorithm demo.
+    - See `src/demo.rs` and `src/cypher.rs`.
+
+2. Currently support these algorithms:
+    - AES
+    - RSA
+
 ## Files
+
+`../HITszCryptoLab-Rust 💡 tree .`
 
 ```
 .
-├── Cargo.lock
 ├── Cargo.toml
+├── README.md
 └── src
     ├── aes
     │   ├── block.rs
@@ -21,7 +32,12 @@ Will be continuously updating with the progress of the lab course.
     │   ├── err.rs
     │   ├── io.rs
     │   └── mod.rs
+    ├── cypher.rs
     ├── demo.rs
-    └── main.rs
+    ├── main.rs
+    ├── rsa
+    │   ├── algorithm.rs
+    │   └── key.rs
+    └── rsa.rs
 
 ```
