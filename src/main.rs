@@ -1,15 +1,19 @@
+#[allow(unused_imports)]
 #[macro_use]
 extern crate lazy_static;
 extern crate num_traits;
+extern crate num_bigint;
 
 mod console;
 mod demo;
+mod cypher;
 mod aes;
+mod rsa;
 
 use demo::Demo;
-use aes::Aes;
+use rsa::Rsa;
 
 fn main() {
-    let mut aes = Aes::new();
-    aes.start_demo();
+    let mut demo = Rsa::new();
+    demo.start_demo();
 }
