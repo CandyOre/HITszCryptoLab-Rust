@@ -2,6 +2,7 @@ use crate::demo::Demo;
 use crate::cypher::{Encryptor, Decryptor};
 
 mod key;
+mod algorithm;
 
 use key::{RsaPrivateKey, RsaPublicKey};
 
@@ -15,7 +16,7 @@ pub struct Rsa {
 impl Rsa {
     pub fn new() -> Self {
         let mut new: Self = Default::default();
-        new.bits = 2048;
+        new.bits = 1024;
         new
     }
 }

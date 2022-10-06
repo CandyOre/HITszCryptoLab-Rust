@@ -1,8 +1,5 @@
-#[allow(unused_imports)]
 #[macro_use]
 extern crate lazy_static;
-extern crate num_traits;
-extern crate num_bigint;
 
 mod console;
 mod demo;
