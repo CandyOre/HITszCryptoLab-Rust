@@ -23,7 +23,7 @@ impl Rsa {
 
 impl Demo for Rsa {
     fn get_name(&self) -> String {
-        "RSA Demo".to_string()
+        "RSA".to_string()
     }
 
     fn acquire_key(&mut self) {

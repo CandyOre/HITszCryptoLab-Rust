@@ -30,7 +30,6 @@ impl RsaPrivateKey {
             None => return None,
         };
         let d = inverse(&phi, &e);
-        let bits = n.bits() as usize;
         let public_component = RsaPublicKey {n, e, bits};
         Some(Self {public_component, d})
     }
@@ -44,7 +43,7 @@ impl RsaPublicKey {
 
 impl Encryptor for RsaPublicKey {
     fn encrypt(&self, plain: &String) -> Vec<u8> {
-        let step = self.bits / 8 - 1;
+        let step = self.bits * 2 / 8 - 1;
 
         let plain = align_string(plain, step);
         let bytes = plain.as_bytes();
@@ -61,7 +60,7 @@ impl Encryptor for RsaPublicKey {
 
 impl Decryptor for RsaPrivateKey {
     fn decrypt(&self, cypher: &Vec<u8>) -> String {
-        let step = self.public_component.bits / 8;
+        let step = self.public_component.bits * 2 / 8;
 
         let mut plain = String::new();
         for i in (0..cypher.len()).step_by(step) {

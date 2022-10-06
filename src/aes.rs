@@ -36,7 +36,7 @@ impl Aes {
 
 impl Demo for Aes {
     fn get_name(&self) -> String {
-        "Advanced Encryption Standard".to_string()
+        "AES".to_string()
     }
 
     fn acquire_key(&mut self) {

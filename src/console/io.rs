@@ -73,6 +73,9 @@ impl IOHelper {
                 print!(" ");
             }
         }
+        if cnt != 0 {
+            println!("");
+        }
     }
 }
 
