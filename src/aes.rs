@@ -4,6 +4,7 @@ mod block;
 mod process;
 mod consts;
 
+use crate::cypher::{Encryptor, Decryptor};
 use round_key::RoundKey;
 
 use crate::demo::Demo;
@@ -55,7 +56,7 @@ impl Demo for Aes {
     fn acquire_key(&mut self) {
         self.key = IOHelper::get_string_loop(
             16,
-            "Please input key (16 characters long): ".to_string(),
+            "\nPlease input key (16 characters long): ".to_string(),
         );
         println!("Your key is {}.", self.key);
         self.acquire_round_key();
@@ -63,7 +64,7 @@ impl Demo for Aes {
 
     fn acquire_cypher(&mut self) {
         println!("\nEncrypting...");
-        self.cypher = process::encrypt(&self.round_key, &self.plain);
+        self.cypher = self.round_key.encrypt(&self.plain);
         println!("The cypher text is: ");
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(self.cypher.clone(), 2),
@@ -73,7 +74,7 @@ impl Demo for Aes {
 
     fn decrypt_plain(&mut self) {
         println!("\nDecrypting...");
-        self.plain = process::decrypt(&self.round_key, &self.cypher);
+        self.plain = self.round_key.decrypt(&self.cypher);
         println!("The plain text as ASCII is:");
         IOHelper::print_with_newline(
             IOHelper::make_char_hex(

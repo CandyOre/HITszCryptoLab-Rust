@@ -1,7 +1,9 @@
 use crate::aes::consts::RCON;
+use crate::cypher::{Encryptor, Decryptor};
 
 use super::row::Row;
 use super::block::Block;
+use super::process::{encrypt, decrypt};
 
 #[derive(Default)]
 pub struct RoundKey {
@@ -54,6 +56,18 @@ impl std::ops::Index<usize> for RoundKey {
 
     fn index(&self, index: usize) -> &Self::Output {
         &self.k[index]
+    }
+}
+
+impl Encryptor for RoundKey {
+    fn encrypt(&self, plain: &String) -> Vec<u8> {
+        encrypt(self, plain)
+    }
+}
+
+impl Decryptor for RoundKey {
+    fn decrypt(&self, cypher: &Vec<u8>) -> String {
+        decrypt(self, cypher)
     }
 }
 
