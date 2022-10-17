@@ -1,9 +1,10 @@
 use num_bigint::{BigUint, RandomBits, BigInt, Sign};
-use num_traits::{Zero, One, Signed};
+use num_traits::{Zero, One};
 use num_integer::{Integer, gcd};
 use rand::Rng;
 
 pub fn new_prime(bits: usize) -> BigUint {
+    assert!(bits >= 8);
     loop {
         let mut candidate: BigUint = gen_bits(bits);
 
@@ -35,18 +36,47 @@ fn is_prime(candidate: &BigUint) -> bool {
 fn fermat_test(candidate: &BigUint) -> bool {
     let one = BigUint::one();
 
-    for _ in 0..2 {
-        let random = gen_bits(candidate.bits() as usize - 1);
-        let result = random.modpow(&(candidate - &one), candidate);
-        if result != one {
-            return false;
-        }
+    let random = gen_bits(candidate.bits() as usize - 1);
+    let result = random.modpow(&(candidate - &one), candidate);
+    if result != one {
+        return false;
     }
 
     true
 }
 
+lazy_static!{
+    static ref PRIME: Vec<usize> = vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+    static ref MILLER_RABIN_TIME: usize = 10;
+}
+
 fn miller_rabin_test(candidate: &BigUint) -> bool {
+    let zero = BigUint::zero();
+    let one = BigUint::one();
+
+    let mut t = candidate.clone() - &one;
+    let mut cnt = 0;
+
+    while candidate & &one == zero {
+        t >>= 1i16;
+        cnt += 1;
+    }
+
+    for i in 0..*MILLER_RABIN_TIME {
+        let a = BigUint::from(PRIME[i]);
+        let mut b = a.modpow(&t, candidate);
+        for _ in 1..=cnt {
+            let k  = &b * &b % candidate;
+            if &k == &one && b != one && b != candidate - &one {
+                return false
+            }
+            b = k;
+        }
+        if b != one {
+            return false
+        }
+    }
+
     true
 }
 
