@@ -19,6 +19,7 @@ pub struct RsaPublicKey {
 }
 
 impl RsaPrivateKey {
+    #[allow(dead_code)]
     pub fn new(bits: usize) -> Option<Self> {
         let one = BigUint::one();
         let p = new_prime(bits);
@@ -30,6 +31,27 @@ impl RsaPrivateKey {
             None => return None,
         };
         let d = inverse(&phi, &e);
+        let public_component = RsaPublicKey {n, e, bits};
+        Some(Self {public_component, d})
+    }
+
+    pub fn new_with_print(bits: usize) -> Option<Self> {
+        let one = BigUint::one();
+        let p = new_prime(bits);
+        println!("p: {p}");
+        let q = new_prime(bits);
+        println!("q: {q}");
+        let n = &p * &q;
+        println!("n: {n}");
+        let phi = (&p - &one) * (&q - &one);
+        println!("phi(n): {phi}");
+        let e = match find_coprime(&phi) {
+            Some(res) => res,
+            None => return None,
+        };
+        println!("e: {e}");
+        let d = inverse(&phi, &e);
+        println!("d: {d}");
         let public_component = RsaPublicKey {n, e, bits};
         Some(Self {public_component, d})
     }

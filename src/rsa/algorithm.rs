@@ -12,7 +12,6 @@ pub fn new_prime(bits: usize) -> BigUint {
         candidate.set_bit((bits - 1) as u64, true);
         
         if is_prime(&candidate) == true {
-            println!("\nprime {}", candidate);
             return candidate;
         }
     }

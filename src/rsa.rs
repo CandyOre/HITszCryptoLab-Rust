@@ -16,7 +16,7 @@ pub struct Rsa {
 impl Rsa {
     pub fn new() -> Self {
         let mut new: Self = Default::default();
-        new.bits = 128;
+        new.bits = 1024;
         new
     }
 }
@@ -27,7 +27,7 @@ impl Demo for Rsa {
     }
 
     fn acquire_key(&mut self) {
-        self.private_key = RsaPrivateKey::new(self.bits)
+        self.private_key = RsaPrivateKey::new_with_print(self.bits)
             .expect("RSA Demo: Error generating private key");
         self.public_key = RsaPublicKey::new(&self.private_key);
     }
