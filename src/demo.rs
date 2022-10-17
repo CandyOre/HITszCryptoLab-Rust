@@ -61,6 +61,7 @@ fn write_file(common: &mut CypherCommon) {
         0,
         "\nPlease input save path(default path: enc.hex): ".to_string(),
     );
+    println!("{:?}", common.save_path);
     if common.save_path.is_empty() {
         common.save_path = "enc.hex".to_string();
     }

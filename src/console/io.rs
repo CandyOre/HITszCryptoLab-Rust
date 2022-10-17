@@ -18,12 +18,16 @@ impl IOHelper {
 
     pub fn get_string(len: usize) -> Result<String, IOError> {
         // only alphabet or numeric is kept
-        let line: String = IOHelper::get_line()?
+        let mut line: String = IOHelper::get_line()?
             .chars()
             .filter(|c|
                 c.is_ascii_alphanumeric() ||
-                c.is_ascii_punctuation()
+                c.is_ascii_punctuation() ||
+                c.is_whitespace()
             ).collect();
+        while line.ends_with("\r") || line.ends_with("\n") {
+            line.pop();
+        }
         if len != 0 && len != line.len() {
             Err(IOError::MismatchedLength {
                 required: (len), acquired: (line.len())
