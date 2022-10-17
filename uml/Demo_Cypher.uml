@@ -1,0 +1,113 @@
+@startuml
+
+interface cypher.Encryptor {
+    + fn encrypt(&self, plain: &String) -> Vec<u8>;
+}
+
+interface cypher.Decryptor {
+    + fn decrypt(&self, cypher: &Vec<u8>) -> String;
+}
+
+class cypher.CypherCommon {
+    + pub plain: String,
+    + pub cypher: Vec<u8>,
+    + pub save_path: String,
+}
+
+interface frontend.Demo {
+    + fn get_name(&self) -> String;
+    + fn acquire_key(&mut self);
+    + fn get_encryptor(&self) -> &dyn Encryptor;
+    + fn get_decryptor(&self) -> &dyn Decryptor;
+    + fn start_demo(&mut self); // with default impl
+    - Default front-end implementations
+}
+
+frontend.Demo --o cypher.Encryptor
+frontend.Demo --o cypher.Decryptor
+frontend.Demo --o cypher.CypherCommon
+
+class frontend.RsaDemo {
+    - bits: usize
+    - private_key: RsaPrivateKey
+    - public_key: RsaPublicKey
+    + pub fn new() -> Self;
+}
+frontend.RsaDemo --> frontend.Demo
+frontend.RsaDemo --o rsa.RsaPrivateKey
+frontend.RsaDemo --o rsa.RsaPublicKey
+
+class rsa.RsaPrivateKey {
+    - public_component: RsaPublicKey,
+    - d: BigUint,
+    + fn encrypt(&self, plain: &String) -> Vec<u8>;
+}
+rsa.RsaPrivateKey --> cypher.Encryptor
+rsa.RsaPrivateKey --o rsa.RsaPublicKey
+
+class rsa.RsaPublicKey {
+    - n: BigUint,
+    - e: BigUint,
+    - bits: usize,
+    + fn decrypt(&self, cypher: &Vec<u8>) -> String;
+}
+rsa.RsaPublicKey --> cypher.Decryptor
+
+class rsa.Algorithm {
+    + pub fn new_prime(bits: usize) -> BigUint
+    + pub fn find_coprime(phi: &BigUint) -> Option<BigUint>
+    + pub fn inverse(phi: &BigUint, e: &BigUint) -> BigUint
+    + pub fn modpow(a: &BigUint, b: &BigUint, module: &BigUint) -> BigUint
+}
+
+rsa.RsaPrivateKey --o rsa.Algorithm
+rsa.RsaPublicKey --o rsa.Algorithm
+
+class frontend.aesDemo {
+    - key: String,
+    - round_key: RoundKey,
+    - fn acquire_round_key(&mut self),
+    + pub fn new() -> Self;
+}
+frontend.aesDemo --> frontend.Demo
+frontend.aesDemo --o aes.RoundKey
+
+class aes.Block {
+    pub fn from_column(vec: Vec<Row>) -> Option<Block>
+    pub fn from_column_iter<T, E>(src: T) -> Option<Block>
+    pub fn into_iter(&self) -> impl Iterator<Item = u8>
+    pub fn into_column_iter(&self) -> impl Iterator<Item = u8>
+    pub fn transpose(&mut self) -> Self
+    pub fn sub(&mut self) -> Self
+    pub fn sub_inv(&mut self) -> Self
+    pub fn shift(&mut self) -> Self
+    pub fn shift_inv(&mut self) -> Self
+}
+
+class aes.Row {
+    pub fn from_iter<T, E>(src: T) -> Option<Row>
+    pub fn into_iter(&self) -> impl Iterator<Item = u8>
+    pub fn rotate(&mut self) -> Self
+    pub fn sub(&mut self) -> Self
+}
+
+class aes.Consts {
+    + RCON: Vec<Row>
+    + SBOX: [u8; 256]
+    + SBOX_INV: [u8; 256]
+    + COLM: Block
+    + COLM_INV: Block
+}
+
+class aes.RoundKey {
+    + pub w: Vec<Row>,
+    + pub k: Vec<Block>,
+    + pub fn new(key: &String) -> Self;
+}
+aes.RoundKey --> cypher.Encryptor
+aes.RoundKey --> cypher.Decryptor
+aes.RoundKey --o aes.Row
+aes.RoundKey --o aes.Block
+aes.RoundKey --o aes.Consts
+
+@enduml
