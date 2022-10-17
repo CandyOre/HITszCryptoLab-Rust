@@ -118,6 +118,26 @@ fn exgcd(a: &BigInt, b: &BigInt, x: &mut BigInt, y: &mut BigInt) {
     }
 }
 
+#[allow(dead_code)]
+pub fn modpow(a: &BigUint, b: &BigUint, module: &BigUint) -> BigUint {
+    let zero = BigUint::zero();
+    let one = BigUint::one();
+
+    let mut ans = one.clone();
+    let mut a = a.clone();
+    let mut b = b.clone();
+
+    while b > zero {
+        if &b & &one == one {
+            ans = &ans * &a % module;
+        }
+        a = &a * &a % module;
+        b >>= 1i16;
+    }
+
+    ans
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -144,5 +164,25 @@ mod test {
 
         println!("\n{}", inv);
         assert_eq!(inv * e % phi, BigUint::one());
+    }
+
+    #[test]
+    fn test_qpow() {
+        assert_eq!(
+            modpow(
+                &BigUint::from(2u32),
+                &BigUint::from(5u32),
+                &BigUint::from(5u32),
+            ),
+            BigUint::from(2u32)
+        );
+        assert_eq!(
+            modpow(
+                &BigUint::from(233u32),
+                &BigUint::from(777u32),
+                &BigUint::from(3517u32),
+            ),
+            BigUint::from(1624u32)
+        )
     }
 }
